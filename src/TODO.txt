@@ -1,0 +1,9 @@
+setTempo
+
+loop
+
+play notes + instrument
+
+interpreter
+
+def morceau (+-= var/fonction)
