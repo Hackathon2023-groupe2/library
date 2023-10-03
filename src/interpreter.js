@@ -1,85 +1,107 @@
 import { ERRORS } from "./errors.js";
 import { KEYWORDS, TEMPO } from "./keywords/Keywords.js";
+import { loop } from "./keywords/loop.js";
+import { pause } from "./keywords/pause.js";
 import { playSound } from "./keywords/play.js";
+import { delay } from "./utils/const.js";
 
 
-let line;
-let error;
-let temp;
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
-document.getElementById('but').addEventListener("click",() => document.getElementById('error').textContent = RunCode(document.querySelector('textarea').value));
+document.getElementById('but').addEventListener("click",() => document.getElementById('error').textContent = new Code(0,document.querySelector('textarea').value).RunCode());
 
-/** 
-* @params {string} code
-*/
-async function RunCode(code){
-    code = code.split(";");
-    line = code.shift();
-    
-    if (!setTempo()){
-        return error
+
+class Code{
+    constructor(temp,code){
+        this.line = "";
+        this.error = undefined;
+        this.temp = temp;
+        this.code = code;
     }
-    
-    while (NextLine(code)){
+
+    async RunCode(){
+        this.code = this.code.split("\n").join("")
+        this.code = this.code.split(";");
+        this.line = this.code.shift();
         
-        await delay(60000/temp);
-        if (!isLineValid()){
-            break
+        if (!this.setTempo()){
+            return this.error
         }
-        if (error != undefined){
-            return error
+        
+        while (this.NextLine()){
+            await delay(60000/this.temp);
+    
+            let isValid = await this.isLineValid()
+            if (!isValid){
+                break
+            }
+            if (this.error != undefined){
+                return this.error
+            }
         }
     }
     
-}
+    setTempo(){
+        let args = this.line.split(" ");
 
-function setTempo(){
-    let args = line.split(" ");
-
-    if  (args.shift() != TEMPO || args.length < 1){
-        error = ERRORS.NO_TEMPO;
-        return false;
+        if (this.temp != 0){
+            this.code.unshift(this.line);
+            return true;
+        }
+        
+        if  (args.shift() != TEMPO || args.length < 1){
+            this.error = ERRORS.NO_TEMPO;
+            return false;
+        }
+        try {
+            this.temp = parseInt(args.shift());
+            return true;        
+        } catch (error) {
+            this.error = ERRORS.NO_INT_TEMPO;
+            return false 
+        }
     }
-
-    temp = parseInt(args.shift());
-    return true;
-}
-
-function NextLine(code){
-    line = code.shift();
-
-    // error gestion
-    // if (code[code.length-1] != ";"){
-    //     error = ERRORS.NO_END_LINE;
-    //     return false;
-    // }
-    // if (code.length == 0){
-    //     error = ERRORS.NO_END_LINE;
-    //     return false;
-    // }
-    if (code.length == 0){
-        return false;
+    
+    NextLine(){
+        this.line = this.code.shift();
+    
+        // error gestion
+        // if (code[code.length-1] != ";"){
+        //     error = ERRORS.NO_END_LINE;
+        //     return false;
+        // }
+        // if (code.length == 0){
+        //     error = ERRORS.NO_END_LINE;
+        //     return false;
+        // }
+        if (this.code.length == 0){
+            return false;
+        }
+    
+        return true;
     }
-
-    return true;
-}
-
-function isLineValid(){
-    let args = line.split(" ");
-    let keyword = args.shift();
-
-    switch (keyword){
-        case KEYWORDS[0]: // play
-            error = playSound(args);
-            break
-        case KEYWORDS[1]: // pause
-        case KEYWORDS[2]: // loop
-        case KEYWORDS[3]: // song
-        default:
-            error = ERRORS.UNKWOW_SYNTAX + keyword;
-            return false    
+    
+    async isLineValid(){
+        let args = this.line.split(" ");
+        let keyword = args.shift();
+    
+        switch (keyword){
+            case KEYWORDS[0]: // play
+                this.error = playSound(args);
+                break
+            case KEYWORDS[1]: // pause
+                this.error = await pause(args);
+                break
+            case KEYWORDS[2]: // loop
+                this.error,this.code = await loop(args,this.temp,this.code)
+            case KEYWORDS[3]: // song
+            default:
+                this.error = ERRORS.UNKWOW_SYNTAX + keyword;
+                return false    
+        }
+    
+        return true
     }
-
-    return true
 }
+
+export { Code };
+
