@@ -26,7 +26,7 @@ async function loop(args,temp,code){
     
     for (let index = 0; index < count; index++) {
         let tmpCode = new Code(temp,loopCode);
-        await tmpCode.RunCode();
+        return await tmpCode.RunCode(),code;
     }
 
     return undefined,code

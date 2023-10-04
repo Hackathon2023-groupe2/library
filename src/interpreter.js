@@ -2,7 +2,8 @@ import { ERRORS } from "./errors.js";
 import { KEYWORDS, TEMPO } from "./keywords/Keywords.js";
 import { loop } from "./keywords/loop.js";
 import { pause } from "./keywords/pause.js";
-import { playSound } from "./keywords/play.js";
+import { playSong } from "./keywords/play.js";
+import { Sounds, playSound } from "./keywords/sound.js";
 import { delay } from "./utils/const.js";
 
 
@@ -86,15 +87,19 @@ class Code{
     
         switch (keyword){
             case KEYWORDS[0]: // play
-                this.error = playSound(args);
+                this.error = playSong(args);
                 break
             case KEYWORDS[1]: // pause
                 this.error = await pause(args);
                 break
             case KEYWORDS[2]: // loop
-                this.error,this.code = await loop(args,this.temp,this.code)
+                this.error,this.code = await loop(args,this.temp,this.code);
             case KEYWORDS[3]: // song
+                this.error,this.code = createSound(args,this.code);   
             default:
+                if (Sounds[keyword] != undefined){
+                    this.error = playSound(keyword);
+                }
                 this.error = ERRORS.UNKWOW_SYNTAX + keyword;
                 return false    
         }

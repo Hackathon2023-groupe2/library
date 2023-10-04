@@ -1,6 +1,6 @@
 import { ERRORS } from "../errors.js";
 
-function playSound(args){
+function playSong(args){
     let arg1 = args.shift();
     let arg2 = args.shift();
     console.log(arg1,arg2);
@@ -18,5 +18,5 @@ function playSound(args){
 
 const INSTRUMENTS = ["piano"];
 const NOTES = ["A","B","C","C2","D","D2","E","F","G"]
-export { playSound };
+export { playSong };
 
