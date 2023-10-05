@@ -1,15 +1,15 @@
 import { ERRORS } from "../errors.js";
 import { Code } from "../interpreter.js";
+import { find_parentesis } from "../utils/functions.js";
 
 async function loop(args,temp,code){
     let loopCode;
     code.unshift(args.join(" "));
     code = code.join(";");
     let start = code.indexOf("[");
-    let end = code.indexOf("]");
+    let end = find_parentesis(code);
     
     if (start == -1 || end == -1){
-        console.log(start,end);
         return ERRORS.INVALID_RANGE;
     }
     loopCode = code.substring(start+1,end)
@@ -26,7 +26,10 @@ async function loop(args,temp,code){
     
     for (let index = 0; index < count; index++) {
         let tmpCode = new Code(temp,loopCode);
-        return await tmpCode.RunCode(),code;
+        await tmpCode.RunCode();
+        if (tmpCode.error != undefined){
+            return tmpCode.error,code;
+        }
     }
 
     return undefined,code

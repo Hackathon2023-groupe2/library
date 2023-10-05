@@ -12,7 +12,7 @@ function playSong(args){
     } else if (arg2 == undefined){
         arg2 = "";
     }
-    console.log(`audio/${arg1}${arg2}.mp3`)
+    
     new Audio(`audio/${arg1}${arg2}.mp3`).play();
 }
 
