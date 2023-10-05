@@ -2,7 +2,7 @@ import { ERRORS } from "../errors.js";
 import { Code } from "../interpreter.js";
 import { find_parentesis } from "../utils/functions.js";
 
-async function loop(args,temp,code){
+async function loop(args,temp,code,funct,err){
     let loopCode;
     code.unshift(args.join(" "));
     code = code.join(";");
@@ -25,7 +25,7 @@ async function loop(args,temp,code){
     }
     
     for (let index = 0; index < count; index++) {
-        let tmpCode = new Code(temp,loopCode);
+        let tmpCode = new Code(temp,loopCode,funct,err);
         await tmpCode.RunCode();
         if (tmpCode.error != undefined){
             return tmpCode.error,code;

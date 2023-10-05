@@ -6,16 +6,14 @@ import { playSong } from "./keywords/play.js";
 import { Sounds, createSound, playSound } from "./keywords/sound.js";
 import { delay } from "./utils/const.js";
 
-
-document.getElementById('but').addEventListener("click",() => new Code(0,document.querySelector('textarea').value).RunCode());
-let Error_Area = document.getElementById('error');
-
 class Code{
-    constructor(temp,code){
+    constructor(temp,code,funct,Error_Area){
         this.line = "";
         this.error = undefined;
         this.temp = temp;
         this.code = code;
+        this.funct = funct;
+        this.Error_Area = Error_Area;
     }
 
     async RunCode(){
@@ -28,7 +26,7 @@ class Code{
         }
         
         if (!this.setTempo()){ // verify if tempo has been setted
-            Error_Area.textContent = this.error;
+            this.Error_Area.textContent = this.error;
             return
         }
         
@@ -39,7 +37,7 @@ class Code{
                 break
             }
             if (this.error != undefined){
-                Error_Area.textContent = this.error;
+                this.Error_Area.textContent = this.error;
                 return;
             }
         }
@@ -89,20 +87,20 @@ class Code{
         switch (keyword){
             case KEYWORDS[0]: // play
                 await delay(60000/this.temp);
-                this.error = playSong(args);
+                this.error = playSong(args,this.funct);
                 break;
             case KEYWORDS[1]: // pause
                 this.error = await pause(args);
                 break;
             case KEYWORDS[2]: // loop
-                this.error,this.code = await loop(args,this.temp,this.code);
+                this.error,this.code = await loop(args,this.temp,this.code,this.funct,this.Error_Area);
                 break;
             case KEYWORDS[3]: // song (=function)
                 this.error,this.code = createSound(args,this.code);
                 break;
                 default:
                     if (Sounds[keyword] != undefined){ // execute song (=function)
-                        this.error = playSound(keyword);
+                        this.error = playSound(keyword,this.funct,this.Error_Area);
                         return true;
                 }
                 this.error = ERRORS.UNKWOW_SYNTAX + keyword;

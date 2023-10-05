@@ -1,22 +1,23 @@
 import { ERRORS } from "../errors.js";
 
-function playSong(args){
+function playSong(args,funct){
     let arg1 = args.shift();
-    let arg2 = args.shift();
-    console.log(arg1,arg2);
 
-    if (!INSTRUMENTS.includes(arg1) && !NOTES.includes(arg1)) {
+    if (NOTES[arg1] == undefined) {
         return ERRORS.UNKNOW_ARUMENT + arg1;
-    } else if (!NOTES.includes(arg2) && arg2 != undefined){
-        return ERRORS.UNKNOW_ARUMENT + arg2;
-    } else if (arg2 == undefined){
-        arg2 = "";
     }
     
-    new Audio(`audio/${arg1}${arg2}.mp3`).play();
+    funct(NOTES[arg1]);
 }
 
-const INSTRUMENTS = ["piano"];
-const NOTES = ["A","B","C","C2","D","D2","E","F","G"]
+const NOTES = {
+    A : 523.25,
+    B : 587.33,
+    C : 659.26,
+    D : 698.46,
+    E : 783.99,
+    F : 880.00,
+    G : 987.77,
+}
 export { playSong };
 

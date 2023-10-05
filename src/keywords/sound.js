@@ -24,8 +24,8 @@ function createSound(args,code){
     return undefined,code
 }
 
-async function playSound(soundName){
-    let tmpCode = new Code(0,Sounds[soundName]);
+async function playSound(soundName,funct,err){
+    let tmpCode = new Code(0,Sounds[soundName],funct,err);
     return await tmpCode.RunCode();
 }
 
