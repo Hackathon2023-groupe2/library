@@ -1,6 +1,5 @@
-import { ERRORS } from "../errors.js";
-import { Code } from "../interpreter.js";
-import { find_parentesis } from "../utils/functions.js";
+const {ERRORS} = require("../errors");
+const {find_parentesis} = require("../utils/functions")
 
 let Sounds = {}
 
@@ -24,10 +23,8 @@ function createSound(args,code){
     return undefined,code
 }
 
-async function playSound(soundName,funct,err){
-    let tmpCode = new Code(0,Sounds[soundName],funct,err);
-    return await tmpCode.RunCode();
+function playSound(soundName){
+    return Sounds[soundName];
 }
 
-export { Sounds, createSound, playSound };
-
+module.exports = {createSound,playSound,Sounds}

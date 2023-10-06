@@ -1,5 +1,5 @@
-import { ERRORS } from "../errors.js";
-import { delay } from "../utils/const.js";
+const {ERRORS} = require("../errors");
+const {delay} = require("../utils/const")
 
 async function pause(args){
     let duration = args.shift();
@@ -12,5 +12,4 @@ async function pause(args){
     }
 }
 
-export { pause };
-
+module.exports = {pause}

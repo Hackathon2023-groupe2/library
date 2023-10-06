@@ -1,8 +1,7 @@
-import { ERRORS } from "../errors.js";
-import { Code } from "../interpreter.js";
-import { find_parentesis } from "../utils/functions.js";
+const {ERRORS} = require("../errors");
+const {find_parentesis} = require("../utils/functions")
 
-async function loop(args,temp,code,funct,err){
+function loop(args,code){
     let loopCode;
     code.unshift(args.join(" "));
     code = code.join(";");
@@ -17,23 +16,14 @@ async function loop(args,temp,code,funct,err){
     
     let repeat = args.shift();
     let count;
-    
     try {
         count = parseInt(repeat);
     } catch (error) {
         return ERRORS.LOOP_ARG;
     }
     
-    for (let index = 0; index < count; index++) {
-        let tmpCode = new Code(temp,loopCode,funct,err);
-        await tmpCode.RunCode();
-        if (tmpCode.error != undefined){
-            return tmpCode.error,code;
-        }
-    }
-
-    return undefined,code
+    console.log(count,loopCode,code,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    return [count,loopCode,code]
 }
 
-export { loop };
-
+module.exports = {loop}

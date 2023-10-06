@@ -9,5 +9,5 @@ const ERRORS = {
     INVALID_RANGE : "invalid syntax : missing '[]' after loop",
 }
 
-export { ERRORS }
+module.exports = {ERRORS}
 

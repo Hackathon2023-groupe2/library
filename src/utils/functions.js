@@ -15,5 +15,4 @@ function find_parentesis(code){
     return index;
 }
 
-export { find_parentesis };
-
+module.exports = {find_parentesis}
